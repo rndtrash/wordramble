@@ -1,0 +1,9 @@
+﻿MainMenu {
+    opacity: 1;
+    transform-origin: 50%;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+
+    &:outro {
+        transform: scale(1.5);
+    }
+}

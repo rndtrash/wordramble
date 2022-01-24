@@ -40,7 +40,7 @@ namespace WordRamble.HUD
 			Type = TileType.Empty;
 		}
 
-		public void SetLetter(char c)
+		public void SetLetter( char c )
 		{
 			letter.Text = $"{c}";
 		}

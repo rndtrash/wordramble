@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using Sandbox.UI;
+using WordRamble.GameLogic;
 
 namespace WordRamble.HUD
 {
@@ -21,7 +22,7 @@ namespace WordRamble.HUD
 
 			public WordRambleLogo()
 			{
-				for (int i = 0; i < letters.Length; i++ )
+				for ( int i = 0; i < letters.Length; i++ )
 				{
 					var line = letters[i];
 					var strip = AddChild<Panel>( "strip spinanim" );
@@ -42,24 +43,49 @@ namespace WordRamble.HUD
 			public void OnThemeChange( Theme newTheme ) { }
 		}
 
+		Panel bottomText;
+		Label bottomLabel;
+
 		public LoadingPanel()
 		{
 			StyleSheet.Load( "/HUD/LoadingPanel.scss" );
 
 			AddClass( "fullscreen fadeanim" );
 			AddChild<WordRambleLogo>();
-			var bottomText = AddChild<Panel>("lmaobottomtext fadeanim");
+			bottomText = AddChild<Panel>( "lmaobottomtext fadeanim" );
 			bottomText.AddChild<Spinner>();
-			var label = bottomText.AddChild<Label>();
-			label.Text = "Loading...";
+			bottomLabel = bottomText.AddChild<Label>();
+			bottomLabel.Text = "Loading...";
 
 			OnThemeChange( Hud.CurrentTheme );
+			OnLoadingStateChange( ServerConnection.Instance.State );
 		}
 
 		[Event( "wr.theme" )]
 		public void OnThemeChange( Theme newTheme )
 		{
 			//
+		}
+
+		[Event( "wr.loading" )]
+		public void OnLoadingStateChange( ServerConnection.ServerConnectionState newState )
+		{
+			switch ( newState )
+			{
+				case ServerConnection.ServerConnectionState.FindingServer:
+					bottomLabel.Text = "Finding a server...";
+					break;
+				case ServerConnection.ServerConnectionState.GettingDictionaries:
+					bottomLabel.Text = "Finding dictionaries...";
+					break;
+				case ServerConnection.ServerConnectionState.Done:
+					bottomLabel.Text = "Done!";
+					Delete();
+					break;
+				case ServerConnection.ServerConnectionState.Invalid:
+				default:
+					break;
+			}
 		}
 	}
 }

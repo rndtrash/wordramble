@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using Sandbox.UI;
+using WordRamble.GameLogic;
 
 namespace WordRamble.HUD
 {
@@ -37,9 +38,16 @@ namespace WordRamble.HUD
 			CurrentTheme = Theme.DefaultLight;
 
 			RootPanel.AddChild<LoadingPanel>();
-			
+
 			// DEBUG
 			//DebugShite();
+		}
+
+		[Event( "wr.loading" )]
+		public void OnLoadingStateChange( ServerConnection.ServerConnectionState newState )
+		{
+			if ( newState == ServerConnection.ServerConnectionState.Done )
+				RootPanel.AddChild<MainMenu>();
 		}
 
 		async void DebugShite()

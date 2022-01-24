@@ -1,9 +1,10 @@
 ﻿LoadingPanel {
     flex-direction: column;
-    transition: opacity 0.1s ease-in;
     align-items: center;
     justify-content: center;
     opacity: 1;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transform-origin: 50%;
 
     WordRambleLogo {
         /*top: 50%;
@@ -33,5 +34,9 @@
         justify-content: center;
         flex-direction: column;
         transition: opacity 0.5s ease-out 2s;
+    }
+
+    &:outro {
+        transform: scale(1.5);
     }
 }

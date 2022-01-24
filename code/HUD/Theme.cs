@@ -4,7 +4,7 @@
 	{
 		public static readonly Theme DefaultLight = new()
 		{
-			FontSize = Sandbox.UI.Length.Pixels(32f) ?? 32f,
+			FontSize = Sandbox.UI.Length.Pixels( 32f ) ?? 32f,
 
 			Background = new Color32( 255, 255, 255 ).ToColor(),
 			Text = new Color32( 33, 33, 33 ).ToColor(),

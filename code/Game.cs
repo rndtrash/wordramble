@@ -18,6 +18,11 @@ namespace WordRamble
 			{
 				_ = new HUD.Hud();
 			}
+
+			if ( IsClient )
+			{
+				GameLogic.ServerConnection.Instance.Connect();
+			}
 		}
 
 		public override CameraSetup BuildCamera( CameraSetup camSetup ) => camSetup;
