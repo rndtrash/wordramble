@@ -76,8 +76,9 @@ namespace WordRamble.GameLogic
 			{
 				var foundServer = false;
 				State = ServerConnectionState.FindingServer;
-				while ( !foundServer && await sr.ReadLineAsync() is string baseUrl )
+				while ( !foundServer && await sr.ReadLineAsync() is string s )
 				{
+					baseUrl = s;
 					foundServer = await GetDictionaries();
 					if ( !foundServer )
 					{
@@ -114,7 +115,7 @@ namespace WordRamble.GameLogic
 			}
 			catch ( Exception e )
 			{
-				Log.Error( $"{e}" );
+				Log.Error( $"URL {baseUrl}/api/dictionary: {e}" );
 				return false;
 			}
 
