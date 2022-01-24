@@ -1,0 +1,35 @@
+﻿RootPanel {
+    margin: 0;
+    padding: 0;
+    //transition: all 0.1s ease-in;
+    pointer-events: all;
+    font-family: 'Roboto';
+}
+
+.fullscreen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+.fadeanim {
+    opacity: 1;
+
+    &:intro, &:outro {
+        opacity: 0;
+    }
+}
+
+.spinanim {
+    transform: rotateY(0deg);
+
+    &:intro {
+        transform: rotateY(90deg);
+    }
+
+    &:outro {
+        transform: rotateY(-90deg);
+    }
+}
