@@ -35,11 +35,7 @@ namespace WordRamble
 
 		public override void OnVoicePlayed( long playerId, float level ) { }
 
-		public override void PostLevelLoaded()
-		{
-			if ( All.OfType<WorldEntity>().FirstOrDefault() is WorldEntity we && we.IsValid )
-				we.Delete();
-		}
+		public override void PostLevelLoaded() { }
 
 		public override void Shutdown() { }
 	}
