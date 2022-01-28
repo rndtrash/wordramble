@@ -1,9 +1,28 @@
 ﻿MainMenu {
+    flex-direction: column;
     opacity: 1;
     transform-origin: 50%;
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
 
     &:outro {
         transform: scale(1.5);
+    }
+
+    .topbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 128px;
+        flex-direction: row;
+
+        z-index: 100;
+    }
+
+    VirtualScrollPanel {
+        height: 100%;
+        padding-top: 128px;
+        pointer-events: all;
+        overflow: scroll;
     }
 }

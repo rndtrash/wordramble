@@ -6,7 +6,7 @@ namespace WordRamble.HUD
 {
 	public partial class Hud : HudEntity<RootPanel>
 	{
-		public static Hud Instance { get; internal set; }
+		public static Hud Instance { get; internal set; } = null;
 
 		public static Theme CurrentTheme
 		{
@@ -29,9 +29,9 @@ namespace WordRamble.HUD
 
 		public Hud()
 		{
-			Instance = this;
-
 			if ( !IsClient ) return;
+
+			Instance = this;
 
 			RootPanel.StyleSheet.Load( "/HUD/Hud.scss" );
 
@@ -46,8 +46,15 @@ namespace WordRamble.HUD
 		[Event( "wr.loading" )]
 		public void OnLoadingStateChange( ServerConnection.ServerConnectionState newState )
 		{
-			if ( newState == ServerConnection.ServerConnectionState.Done )
-				RootPanel.AddChild<MainMenu>();
+			//if ( newState == ServerConnection.ServerConnectionState.Done )
+				//OpenMainMenu();
+		}
+
+		public void OpenMainMenu()
+		{
+			Host.AssertClient();
+
+			RootPanel.AddChild<MainMenu>();
 		}
 
 		async void DebugShite()

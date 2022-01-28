@@ -11,12 +11,4 @@
     opacity: 1;
     transition: background-image-tint 0.1s ease-in, opacity 0.1s ease-in;
     transform-origin: 50%;
-
-    &:intro {
-        opacity: 0;
-    }
-
-    &:outro {
-        opacity: 0;
-    }
 }

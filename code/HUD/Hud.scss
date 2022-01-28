@@ -1,7 +1,7 @@
 ﻿RootPanel {
     margin: 0;
     padding: 0;
-    //transition: all 0.1s ease-in;
+    transition: opacity 0.5s ease-out;
     pointer-events: all;
     font-family: 'Roboto';
 }
@@ -12,6 +12,14 @@
     height: 100%;
     top: 0;
     left: 0;
+
+    &:intro {
+        transform: scale(0.75);
+    }
+
+    &:outro {
+        transform: scale(1.25);
+    }
 }
 
 .fadeanim {
@@ -32,4 +40,10 @@
     &:outro {
         transform: rotateY(-90deg);
     }
+}
+
+.blur {
+    backdrop-filter: blur(15px);
+    /*background-image: url(/ui/grain.png);
+    background-blend-mode: multiply;*/
 }

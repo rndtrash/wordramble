@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WordRamble.GameLogic
 {
-	public class ServerConnection
+	public partial class ServerConnection : BaseNetworkable
 	{
 		public enum ServerConnectionState
 		{
@@ -18,44 +18,36 @@ namespace WordRamble.GameLogic
 			Done
 		}
 
-		public ServerConnectionState State
-		{
-			get
-			{
-				return state;
-			}
-			protected set
-			{
-				state = value;
-				Event.Run( "wr.loading", state );
-			}
-		}
+		[Net, Change( nameof( OnStateChanged ) )]
+		public ServerConnectionState State { get; protected set; }
 
-		public static ServerConnection Instance
-		{
-			get
-			{
-				if ( instance == null )
-					instance = new();
-				return instance;
-			}
-		}
+		[Net]
+		public Dictionary<string, GameDictionary> Dictionaries { get; internal set; } = new();
 
-		public Dictionary<string, GameDictionary> Dictionaries = new();
-
-		static ServerConnection instance;
-		ServerConnectionState state;
 		string baseUrl;
 
 		public ServerConnection()
 		{
 			Event.Register( this );
 
-			State = ServerConnectionState.Invalid;
+			SetState( ServerConnectionState.Invalid );
+		}
+
+		protected void SetState( ServerConnectionState state )
+		{
+			State = state;
+			Event.Run( "wr.loading", state );
+		}
+
+		public void OnStateChanged( ServerConnectionState oldState, ServerConnectionState state )
+		{
+			Event.Run( "wr.loading", state );
 		}
 
 		public async void Connect()
 		{
+			Host.AssertServer();
+
 			Stream f;
 			try
 			{
@@ -64,18 +56,16 @@ namespace WordRamble.GameLogic
 			catch ( Exception e )
 			{
 				Log.Error( $"Fatal: cannot find servers.txt ({e})" );
-				State = ServerConnectionState.Fail;
+				SetState( ServerConnectionState.Fail );
 				Local.Client.Kick();
 				return;
 			}
-
-			State = ServerConnectionState.FindingServer;
 
 			using var sr = new StreamReader( f );
 			try
 			{
 				var foundServer = false;
-				State = ServerConnectionState.FindingServer;
+				SetState( ServerConnectionState.FindingServer );
 				while ( !foundServer && await sr.ReadLineAsync() is string s )
 				{
 					baseUrl = s;
@@ -92,14 +82,14 @@ namespace WordRamble.GameLogic
 			catch ( Exception )
 			{
 				Log.Error( "An error occured while finding a server" );
-				State = ServerConnectionState.Fail;
+				SetState( ServerConnectionState.Fail );
 				Local.Client.Kick();
 				return;
 			}
 
 			f.Close();
 
-			State = ServerConnectionState.Done;
+			SetState( ServerConnectionState.Done );
 		}
 
 		public async Task<bool> GetDictionaries()
@@ -107,7 +97,8 @@ namespace WordRamble.GameLogic
 			try
 			{
 				var result = await new Http( new Uri( $"{baseUrl}/api/dictionary" ) ).GetStringAsync();
-				State = ServerConnectionState.GettingDictionaries;
+				SetState( ServerConnectionState.GettingDictionaries );
+
 				foreach ( var d in result.Split( '\n' ) )
 				{
 					Dictionaries.Add( d, await GetDictionaryDescription( d ) );
@@ -126,7 +117,14 @@ namespace WordRamble.GameLogic
 		{
 			using var s = await new Http( new Uri( $"{baseUrl}/api/dictionary/{ident}" ) ).GetStreamAsync();
 			using var sr = new StreamReader( s );
-			return await GameDictionary.CreateAsync( sr );
+			return await GameDictionary.CreateAsync( sr, ident );
+		}
+
+		public async Task<string> GetDictionaryWord( string ident )
+		{
+			using var s = await new Http( new Uri( $"{baseUrl}/api/dictionary/{ident}/word" ) ).GetStreamAsync();
+			using var sr = new StreamReader( s );
+			return await sr.ReadLineAsync();
 		}
 	}
 }

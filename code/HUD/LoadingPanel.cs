@@ -45,6 +45,8 @@ namespace WordRamble.HUD
 
 		Panel bottomText;
 		Label bottomLabel;
+		TimeUntil PlayedIntro = 1.5f;
+		bool commitDie = false;
 
 		public LoadingPanel()
 		{
@@ -58,7 +60,19 @@ namespace WordRamble.HUD
 			bottomLabel.Text = "Loading...";
 
 			OnThemeChange( Hud.CurrentTheme );
-			OnLoadingStateChange( ServerConnection.Instance.State );
+			OnLoadingStateChange( Game.Instance.ServerConnection?.State ?? ServerConnection.ServerConnectionState.Invalid );
+		}
+
+		public override void Tick()
+		{
+			base.Tick();
+
+			if ( commitDie && PlayedIntro < 0 )
+			{
+				commitDie = false;
+				Hud.Instance.OpenMainMenu();
+				Delete();
+			}
 		}
 
 		[Event( "wr.theme" )]
@@ -80,7 +94,7 @@ namespace WordRamble.HUD
 					break;
 				case ServerConnection.ServerConnectionState.Done:
 					bottomLabel.Text = "Done!";
-					Delete();
+					commitDie = true;
 					break;
 				case ServerConnection.ServerConnectionState.Invalid:
 				default:
