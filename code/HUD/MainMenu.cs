@@ -18,29 +18,25 @@ namespace WordRamble.HUD
 
 			var virtualScroll = AddChild<VirtualScrollPanel>();
 			virtualScroll.Layout.ItemWidth = 192;
-			virtualScroll.Layout.ItemHeight = 192;
+			virtualScroll.Layout.ItemHeight = 192 + 32;
 			virtualScroll.Layout.AutoColumns = true;
 
-			var debugCount = 0;
 			virtualScroll.OnCreateCell = ( panel, data ) =>
 			{
 				if ( data is not GameLogic.GameDictionary dict )
 					return;
 
-				var c = panel.AddChild<Panel>();
+				panel.AddClass( "selectable" );
+				Tile c = panel.AddChild<Tile>();
 
-				c.Style.Width = c.Style.Height = Length.Fraction( 1 );
-				c.Style.Padding = Length.Pixels( 8 );
-				c.Style.BackgroundColor = new ColorHsv( dict.H, dict.S, dict.V );
+				c.BackgroundOverride = new ColorHsv( dict.H, dict.S, dict.V );
+				c.SetLetter( dict.Glyph.ToCharArray()[0] );
 
-				var l = c.AddChild<Label>();
-				l.Text = $"{debugCount++}";
-				l.Style.FontColor = Color.White;
-				l.Style.FontSize = Length.Pixels( 24 );
+				panel.AddChild<Label>( "bt big" ).Text = dict.Name;
+				//panel.AddChild<Label>( "bt" ).Text = dict.Description;
 			};
 
-			for ( var i = 0; i < 120; i++ )
-				virtualScroll.Data.AddRange( Game.Instance.ServerConnection.Dictionaries.Values );
+			virtualScroll.Data.AddRange( Game.Instance.ServerConnection.Dictionaries.Values );
 
 			// DEBUG
 			//(Local.Hud as RootPanel).SeeThrough = true;

@@ -1,13 +1,15 @@
-﻿Tile, GameTile {
+﻿Tile {
     width: 128px;
     height: 128px;
+    margin-right: 8px;
+    margin-bottom: 8px;
     aspect-ratio: 1;
     opacity: 1;
     transform: rotateY(0deg);
     transform-origin: 50%;
+    transition: opacity 0.1s ease-in, transform 0.1s ease-in;
     align-items: center;
     justify-content: center;
-    transition: margin 0.1s ease-out, width 0.1s ease-out, height 0.1s ease-out, opacity 0.1s ease-in, transform 0.1s ease-in;
 
     Label {
         text-align: center;

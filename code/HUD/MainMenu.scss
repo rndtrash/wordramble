@@ -15,7 +15,6 @@
         width: 100%;
         height: 128px;
         flex-direction: row;
-
         z-index: 100;
     }
 
@@ -24,5 +23,39 @@
         padding-top: 128px;
         pointer-events: all;
         overflow: scroll;
+
+        panel {
+            flex-direction: column;
+
+            Label.bt {
+                font-size: 16px;
+
+                &.big {
+                    font-size: 20px;
+                    font-weight: bold;
+                }
+            }
+
+            &.selectable {
+                &:hover {
+                    Tile {
+                        margin: 4px;
+                        width: 184px;
+                        height: 184px;
+                    }
+                }
+            }
+        }
+
+        GridLayout {
+            justify-content: center;
+        }
+
+        Tile {
+            width: 176px;
+            height: 176px;
+            margin: 8px;
+            pointer-events: none;
+        }
     }
 }

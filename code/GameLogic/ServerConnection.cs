@@ -57,7 +57,7 @@ namespace WordRamble.GameLogic
 			{
 				Log.Error( $"Fatal: cannot find servers.txt ({e})" );
 				SetState( ServerConnectionState.Fail );
-				Local.Client.Kick();
+				Game.Close();
 				return;
 			}
 
@@ -83,7 +83,7 @@ namespace WordRamble.GameLogic
 			{
 				Log.Error( "An error occured while finding a server" );
 				SetState( ServerConnectionState.Fail );
-				Local.Client.Kick();
+				Game.Close();
 				return;
 			}
 

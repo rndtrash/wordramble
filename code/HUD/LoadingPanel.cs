@@ -30,8 +30,8 @@ namespace WordRamble.HUD
 					for ( int j = 0; j < 2; j++ )
 					{
 						var c = line[j];
-						var t = strip.AddChild<Tile>();
-						t.Type = c == ' ' ? Tile.TileType.Empty : (j % 2 == 0 ? Tile.TileType.Correct : Tile.TileType.Present);
+						var t = strip.AddChild<GameTile>();
+						t.Type = c == ' ' ? GameTile.TileType.Empty : (j % 2 == 0 ? GameTile.TileType.Correct : GameTile.TileType.Present);
 						t.SetLetter( c );
 					}
 				}

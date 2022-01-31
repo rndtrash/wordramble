@@ -13,13 +13,13 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        padding-left: 8px;
-        padding-top: 8px;
+        padding: 8px;
 
         .strip {
             flex-direction: column;
             //justify-content: space-between;
             //aspect-ratio: 0.5;
+            height: 264px;
             transition: transform 1s ease-out 1s;
         }
     }

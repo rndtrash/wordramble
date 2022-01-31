@@ -128,6 +128,12 @@ namespace WordRamble
 
 			cl.Pawn?.FrameSimulate( cl );
 		}
+
+		[ClientRpc]
+		public static void Close()
+		{
+			(Local.Pawn as Entities.Pawn).Client.Kick();
+		}
 	}
 
 }

@@ -5,39 +5,29 @@ namespace WordRamble.HUD
 {
 	public class Tile : Panel
 	{
-		public enum TileType
-		{
-			Empty,
-			Absent,
-			Present,
-			Correct
-		}
-
-		public TileType Type
+		public Color? BackgroundOverride
 		{
 			get
 			{
-				return type;
+				return backgroundOverride;
 			}
 			set
 			{
-				type = value;
-
+				backgroundOverride = value;
 				OnThemeChange( Hud.CurrentTheme );
 			}
 		}
 
-		TileType type;
-		Label letter;
+		Label letter = null;
+		Color? backgroundOverride = null;
 
 		public Tile()
 		{
 			StyleSheet.Load( "/HUD/Tile.scss" );
 
-			AddClass( "fadeanim spinanim" );
 			letter = AddChild<Label>();
 
-			Type = TileType.Empty;
+			OnThemeChange( Hud.CurrentTheme );
 		}
 
 		public void SetLetter( char c )
@@ -46,27 +36,10 @@ namespace WordRamble.HUD
 		}
 
 		[Event( "wr.theme" )]
-		public void OnThemeChange( Theme newTheme )
+		public virtual void OnThemeChange( Theme newTheme )
 		{
-			switch ( Type )
-			{
-				case TileType.Absent:
-					Style.FontColor = newTheme.TileText;
-					Style.BackgroundColor = newTheme.Absent;
-					break;
-				case TileType.Present:
-					Style.FontColor = newTheme.TileText;
-					Style.BackgroundColor = newTheme.Present;
-					break;
-				case TileType.Correct:
-					Style.FontColor = newTheme.TileText;
-					Style.BackgroundColor = newTheme.Correct;
-					break;
-				default:
-					Style.FontColor = newTheme.Text;
-					Style.BackgroundColor = newTheme.TileBackground;
-					break;
-			}
+			Style.FontColor = BackgroundOverride == null ? newTheme.ButtonText : newTheme.TileText;
+			Style.BackgroundColor = BackgroundOverride ?? newTheme.Background;
 		}
 	}
 }
