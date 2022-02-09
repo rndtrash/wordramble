@@ -51,7 +51,7 @@ namespace WordRamble.GameLogic
 			Stream f;
 			try
 			{
-				f = FileSystem.Mounted.OpenRead( "config/servers.txt" );
+				f = FileSystem.Mounted.OpenRead( "data/servers.txt.json" ); // FIXME: cring, addon upload ignores txt
 			}
 			catch ( Exception e )
 			{
@@ -69,10 +69,17 @@ namespace WordRamble.GameLogic
 				while ( !foundServer && await sr.ReadLineAsync() is string s )
 				{
 					baseUrl = s;
-					foundServer = await GetDictionaries();
-					if ( !foundServer )
+					try
+					{
+						await GetDictionaries();
+						foundServer = true;
+					}
+					catch ( Exception e )
 					{
 						Log.Info( $"Failed to connect to \"{baseUrl}\", trying another one..." );
+#if DEBUG
+						Log.Warning( $"URL {baseUrl}/api/dictionary: {e}" );
+#endif
 					}
 				}
 
@@ -92,25 +99,15 @@ namespace WordRamble.GameLogic
 			SetState( ServerConnectionState.Done );
 		}
 
-		public async Task<bool> GetDictionaries()
+		public async Task GetDictionaries()
 		{
-			try
-			{
-				var result = await new Http( new Uri( $"{baseUrl}/api/dictionary" ) ).GetStringAsync();
-				SetState( ServerConnectionState.GettingDictionaries );
+			var result = await new Http( new Uri( $"{baseUrl}/api/dictionary" ) ).GetStringAsync();
+			SetState( ServerConnectionState.GettingDictionaries );
 
-				foreach ( var d in result.Split( '\n' ) )
-				{
-					Dictionaries.Add( d, await GetDictionaryDescription( d ) );
-				}
-			}
-			catch ( Exception e )
+			foreach ( var d in result.Split( '\n' ) )
 			{
-				Log.Error( $"URL {baseUrl}/api/dictionary: {e}" );
-				return false;
+				Dictionaries.Add( d, await GetDictionaryDescription( d ) );
 			}
-
-			return true;
 		}
 
 		public async Task<GameDictionary> GetDictionaryDescription( string ident )

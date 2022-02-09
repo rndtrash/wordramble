@@ -13,49 +13,59 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 128px;
+        height: 64px;
         flex-direction: row;
         z-index: 100;
     }
 
     VirtualScrollPanel {
         height: 100%;
-        padding-top: 128px;
+        padding: 0 16px;
+        padding-top: 64px;
         pointer-events: all;
         overflow: scroll;
-
-        panel {
-            flex-direction: column;
-
-            Label.bt {
-                font-size: 16px;
-
-                &.big {
-                    font-size: 20px;
-                    font-weight: bold;
-                }
-            }
-
-            &.selectable {
-                &:hover {
-                    Tile {
-                        margin: 4px;
-                        width: 184px;
-                        height: 184px;
-                    }
-                }
-            }
-        }
-
-        GridLayout {
-            justify-content: center;
-        }
 
         Tile {
             width: 176px;
             height: 176px;
             margin: 8px;
             pointer-events: none;
+        }
+
+        panel {
+            flex-direction: column;
+            transform-origin: 50%;
+            transition: transform 0.1s ease-out;
+
+            Label.bt {
+                font-size: 20px;
+                font-weight: bold;
+                transition: font-size 0.1s ease-out;
+            }
+
+            &.selectable:hover {
+                Tile {
+                    margin: 4px;
+                    width: 176px;
+                    height: 176px;
+
+                    Label {
+                        font-size: 76px;
+                    }
+                }
+
+                Label.bt {
+                    font-size: 24px;
+                }
+            }
+
+            &.selectable:active {
+                transform: scale(0.9);
+            }
+        }
+
+        GridLayout {
+            justify-content: center;
         }
     }
 }

@@ -32,8 +32,7 @@ namespace WordRamble.HUD
 				c.BackgroundOverride = new ColorHsv( dict.H, dict.S, dict.V );
 				c.SetLetter( dict.Glyph.ToCharArray()[0] );
 
-				panel.AddChild<Label>( "bt big" ).Text = dict.Name;
-				//panel.AddChild<Label>( "bt" ).Text = dict.Description;
+				panel.AddChild<Label>( "bt" ).Text = dict.Name;
 			};
 
 			virtualScroll.Data.AddRange( Game.Instance.ServerConnection.Dictionaries.Values );
