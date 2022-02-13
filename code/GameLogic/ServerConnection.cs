@@ -24,7 +24,8 @@ namespace WordRamble.GameLogic
 		[Net]
 		public Dictionary<string, GameDictionary> Dictionaries { get; internal set; } = new();
 
-		string baseUrl;
+		[Net]
+		public string BaseUrl { get; internal set; }
 
 		public ServerConnection()
 		{
@@ -51,7 +52,7 @@ namespace WordRamble.GameLogic
 			Stream f;
 			try
 			{
-				f = FileSystem.Mounted.OpenRead( "data/servers.txt.json" ); // FIXME: cring, addon upload ignores txt
+				f = FileSystem.Mounted.OpenRead( "config/servers.txt.piss.shit.fart.fuckyou.png" ); // FIXME: cring, addon upload ignores txt
 			}
 			catch ( Exception e )
 			{
@@ -68,7 +69,7 @@ namespace WordRamble.GameLogic
 				SetState( ServerConnectionState.FindingServer );
 				while ( !foundServer && await sr.ReadLineAsync() is string s )
 				{
-					baseUrl = s;
+					BaseUrl = new( s );
 					try
 					{
 						await GetDictionaries();
@@ -76,9 +77,9 @@ namespace WordRamble.GameLogic
 					}
 					catch ( Exception e )
 					{
-						Log.Info( $"Failed to connect to \"{baseUrl}\", trying another one..." );
+						Log.Info( $"Failed to connect to \"{BaseUrl}\", trying another one..." );
 #if DEBUG
-						Log.Warning( $"URL {baseUrl}/api/dictionary: {e}" );
+						Log.Warning( $"URL {BaseUrl}/api/dictionary: {e}" );
 #endif
 					}
 				}
@@ -101,7 +102,7 @@ namespace WordRamble.GameLogic
 
 		public async Task GetDictionaries()
 		{
-			var result = await new Http( new Uri( $"{baseUrl}/api/dictionary" ) ).GetStringAsync();
+			var result = await new Http( new Uri( $"{BaseUrl}api/dictionary" ) ).GetStringAsync();
 			SetState( ServerConnectionState.GettingDictionaries );
 
 			foreach ( var d in result.Split( '\n' ) )
@@ -112,16 +113,16 @@ namespace WordRamble.GameLogic
 
 		public async Task<GameDictionary> GetDictionaryDescription( string ident )
 		{
-			using var s = await new Http( new Uri( $"{baseUrl}/api/dictionary/{ident}" ) ).GetStreamAsync();
+			using var s = await new Http( new Uri( $"{BaseUrl}api/dictionary/{ident}" ) ).GetStreamAsync();
 			using var sr = new StreamReader( s );
 			return await GameDictionary.CreateAsync( sr, ident );
 		}
 
-		public async Task<string> GetDictionaryWord( string ident )
+		public async Task<Tuple<int, string>> GetDictionaryWord( string ident )
 		{
-			using var s = await new Http( new Uri( $"{baseUrl}/api/dictionary/{ident}/word" ) ).GetStreamAsync();
+			using var s = await new Http( new Uri( $"{BaseUrl}api/dictionary/{ident}/word" ) ).GetStreamAsync();
 			using var sr = new StreamReader( s );
-			return await sr.ReadLineAsync();
+			return new( int.Parse( await sr.ReadLineAsync() ), await sr.ReadLineAsync() );
 		}
 	}
 }

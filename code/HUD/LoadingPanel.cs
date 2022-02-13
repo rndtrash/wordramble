@@ -31,7 +31,7 @@ namespace WordRamble.HUD
 					{
 						var c = line[j];
 						var t = strip.AddChild<GameTile>();
-						t.Type = c == ' ' ? GameTile.TileType.Empty : (j % 2 == 0 ? GameTile.TileType.Correct : GameTile.TileType.Present);
+						t.Type = c == ' ' ? TileType.Empty : (j % 2 == 0 ? TileType.Correct : TileType.Present);
 						t.SetLetter( c );
 					}
 				}

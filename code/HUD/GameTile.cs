@@ -1,18 +1,11 @@
 ﻿using Sandbox;
 using Sandbox.UI;
+using WordRamble.GameLogic;
 
 namespace WordRamble.HUD
 {
 	public class GameTile : Tile
 	{
-		public enum TileType
-		{
-			Empty,
-			Absent,
-			Present,
-			Correct
-		}
-
 		public TileType Type
 		{
 			get
