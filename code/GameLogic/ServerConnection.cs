@@ -102,7 +102,7 @@ namespace WordRamble.GameLogic
 
 		public async Task GetDictionaries()
 		{
-			var result = await new Http( new Uri( $"{BaseUrl}api/dictionary" ) ).GetStringAsync();
+			var result = await new Http( new Uri( $"{BaseUrl}/api/dictionary" ) ).GetStringAsync();
 			SetState( ServerConnectionState.GettingDictionaries );
 
 			foreach ( var d in result.Split( '\n' ) )
@@ -113,14 +113,14 @@ namespace WordRamble.GameLogic
 
 		public async Task<GameDictionary> GetDictionaryDescription( string ident )
 		{
-			using var s = await new Http( new Uri( $"{BaseUrl}api/dictionary/{ident}" ) ).GetStreamAsync();
+			using var s = await new Http( new Uri( $"{BaseUrl}/api/dictionary/{ident}" ) ).GetStreamAsync();
 			using var sr = new StreamReader( s );
 			return await GameDictionary.CreateAsync( sr, ident );
 		}
 
 		public async Task<Tuple<int, string>> GetDictionaryWord( string ident )
 		{
-			using var s = await new Http( new Uri( $"{BaseUrl}api/dictionary/{ident}/word" ) ).GetStreamAsync();
+			using var s = await new Http( new Uri( $"{BaseUrl}/api/dictionary/{ident}/word" ) ).GetStreamAsync();
 			using var sr = new StreamReader( s );
 			return new( int.Parse( await sr.ReadLineAsync() ), await sr.ReadLineAsync() );
 		}

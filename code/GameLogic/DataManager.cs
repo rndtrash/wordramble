@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using WordRamble.Extensions;
 
 namespace WordRamble.GameLogic
 {
@@ -13,7 +14,7 @@ namespace WordRamble.GameLogic
 			public bool Won;
 			public uint Attempt;
 			public string WordOfTheDay;
-			public DateTime TimeStamp;
+			public DateTime TimeStamp; // Unix Time
 			public Tuple<TileType, char>[,] Letters; // 6 by 5
 
 			public async static Task<Tuple<TileType, char>[,]> ReadLetters( StreamReader sr )
@@ -41,7 +42,7 @@ namespace WordRamble.GameLogic
 						Won = int.Parse( await sr.ReadLineAsync() ) == 1 ? true : false,
 						Attempt = uint.Parse( await sr.ReadLineAsync() ),
 						WordOfTheDay = await sr.ReadLineAsync(),
-						TimeStamp = DateTime.Parse( await sr.ReadLineAsync() ).ToLocalTime(),
+						TimeStamp = DateTimeExtension.FromUnixSeconds(long.Parse( await sr.ReadLineAsync() )),
 						Letters = await ReadLetters( sr )
 					};
 				}
@@ -62,19 +63,22 @@ namespace WordRamble.GameLogic
 			return $"{new Uri( Game.Instance.ServerConnection.BaseUrl ).Host.FastHash()}-{d.Name}".NormalizeFilename();
 		}
 
-		public static IEnumerable<int> GetEntries( GameDictionary d )
+		public static IEnumerable<DateTime> GetEntries( GameDictionary d )
 		{
 			var dp = DictionaryPath( d );
 			FileSystem.Data.CreateDirectory( dp );
 
-			List<int> entries = new();
+			List<DateTime> entries = new();
 			foreach ( var f in FileSystem.Data.FindFile( dp, "*.guess" ) )
 			{
-				var e = f[..^".guess".Length].ToInt( -1 );
-				if ( e == 0 )
-					Log.Warning( $"Invalid entry name {f}" );
-				else
+				try
+				{
+					var e = DateTimeExtension.FromUnixSeconds(long.Parse( f[..^".guess".Length] ));
 					entries.Add( e );
+				} catch ( Exception e )
+				{
+					Log.Warning( $"Invalid entry name {f} ({e})" );
+				}
 			}
 
 			return entries;
