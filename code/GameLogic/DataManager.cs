@@ -15,7 +15,7 @@ namespace WordRamble.GameLogic
 			public uint Attempt;
 			public string WordOfTheDay;
 			public DateTime TimeStamp; // Unix Time
-			public Tuple<TileType, char>[,] Letters; // 6 by 5
+			public Tuple<TileType, char>[,] Letters; // 6 attempts by 5 characters
 
 			public async static Task<Tuple<TileType, char>[,]> ReadLetters( StreamReader sr )
 			{
@@ -60,7 +60,12 @@ namespace WordRamble.GameLogic
 
 		public static string DictionaryPath( GameDictionary d )
 		{
-			return $"{new Uri( Game.Instance.ServerConnection.BaseUrl ).Host.FastHash()}-{d.Name}".NormalizeFilename();
+			return DictionaryPath( d.Name );
+		}
+
+		public static string DictionaryPath( string dictionaryName )
+		{
+			return $"{new Uri( Game.Instance.ServerConnection.BaseUrl ).Host.FastHash()}-{dictionaryName.Normalize().Replace('/', '-')}";
 		}
 
 		public static IEnumerable<DateTime> GetEntries( GameDictionary d )
@@ -82,6 +87,15 @@ namespace WordRamble.GameLogic
 			}
 
 			return entries;
+		}
+
+		public static void AddEntry( string dictionaryName, Guess g )
+		{
+			var dp = DictionaryPath( dictionaryName );
+			FileSystem.Data.CreateDirectory( dp );
+
+			throw new Exception( "TODO: ask to whitelist StreamWriter" );
+			//FileSystem.Data.OpenWrite( $"{dp}/" );
 		}
 	}
 }
